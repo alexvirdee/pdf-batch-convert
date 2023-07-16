@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useSearchParams } from 'next/navigation'
 import Dropzone from "react-dropzone"
 import axios from 'axios';
 import ConvertBtn from './ConvertBtn'
@@ -9,7 +9,8 @@ export default function DragAndDrop() {
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [conversionCompleted, setConversionCompleted] = useState(false);
     const [isConverting, setIsConverting] = useState(false);
-    const router = useRouter();
+    const searchParams = useSearchParams();
+
 
     const handleDrop = (acceptedFiles: any[]) => {
         // Filter out non-PDF files
@@ -56,6 +57,39 @@ export default function DragAndDrop() {
         }
     };
 
+    const handleDownload = async () => {
+
+        try {
+            const response = await axios.get('http://127.0.0.1:5000/download', {
+                responseType: 'blob'
+            });
+
+            if (response.status === 200) {
+                // Create a URL object from the response data
+                const url = URL.createObjectURL(new Blob([response.data]));
+
+                console.log('url', url)
+
+                // Create a temporary anchor element and set its attributes
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'converted_to_png.zip';
+
+                // Programmatically click the anchor element to initiate the download
+                link.click();
+
+                // Clean up the URL object
+                URL.revokeObjectURL(url);
+            } else {
+                console.error("Failed to download. Status:", response.status)
+            }
+
+
+        } catch (error) {
+            console.error('Error occurred during download:', error);
+        }
+    };
+
     return (
         <>
             <Dropzone onDrop={handleDrop}>
@@ -79,7 +113,7 @@ export default function DragAndDrop() {
                     </ul>
                     {isConverting && <p>Working on it...</p>}
                     {conversionCompleted && (
-                        <button className="btn">Download PNG Images</button>
+                        <button className="btn" onClick={handleDownload} >Download PNG Images</button>
                     )}
                 </div>
             )}
