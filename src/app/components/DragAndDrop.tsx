@@ -1,6 +1,5 @@
 'use client'
 import { useState } from "react"
-import { useSearchParams } from 'next/navigation'
 import Dropzone from "react-dropzone"
 import axios from 'axios';
 import ConvertBtn from './ConvertBtn'
@@ -9,20 +8,19 @@ export default function DragAndDrop() {
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [conversionCompleted, setConversionCompleted] = useState(false);
     const [isConverting, setIsConverting] = useState(false);
-    const searchParams = useSearchParams();
 
 
     const handleDrop = (acceptedFiles: any[]) => {
         // Filter out non-PDF files
-        const pdfFiles = acceptedFiles.filter(file => file.type === 'application/pdf');
+        const pdfFiles = acceptedFiles.filter(file => file.type === "application/pdf");
 
         if (pdfFiles.length === 0) {
-            console.log('no pdf files were selected');
+            console.log("no pdf files were selected");
             return
         }
 
         // Process the selected PDF files
-        console.log('Selected PDF files', pdfFiles);
+        console.log("Selected PDF files", pdfFiles);
         // Call function to handle the selected files
         setUploadedFiles(acceptedFiles);
         // pass to back end python program for processing 
@@ -39,19 +37,21 @@ export default function DragAndDrop() {
                 formData.append('files', file);
             });
 
+            const apiUrl = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_API_URL : "http://127.0.0.1:5001";
+
             // Make a POST request to the API route
-            const response = await fetch('http://127.0.0.1:5000/convert', {
-                method: 'POST',
+            const response = await fetch(`${apiUrl}/convert`, {
+                method: "POST",
                 body: formData,
             });
 
             if (!response.ok) {
-                throw new Error('Conversion failed');
+                throw new Error("Conversion failed");
             }
 
             setConversionCompleted(true);
         } catch (error) {
-            console.error('Error occurred during the conversion:', error);
+            console.error("Error occurred during the conversion:", error);
         } finally {
             setIsConverting(false);
         }
@@ -60,20 +60,22 @@ export default function DragAndDrop() {
     const handleDownload = async () => {
 
         try {
-            const response = await axios.get('http://127.0.0.1:5000/download', {
-                responseType: 'blob'
+            const apiUrl = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_API_URL : "http://127.0.0.1:5001";
+
+            const response = await axios.get(`${apiUrl}/download`, {
+                responseType: "blob"
             });
 
             if (response.status === 200) {
                 // Create a URL object from the response data
                 const url = URL.createObjectURL(new Blob([response.data]));
 
-                console.log('url', url)
+                console.log("url", url)
 
                 // Create a temporary anchor element and set its attributes
-                const link = document.createElement('a');
+                const link = document.createElement("a");
                 link.href = url;
-                link.download = 'converted_to_png.zip';
+                link.download = "converted_to_png.zip";
 
                 // Programmatically click the anchor element to initiate the download
                 link.click();
@@ -86,7 +88,7 @@ export default function DragAndDrop() {
 
 
         } catch (error) {
-            console.error('Error occurred during download:', error);
+            console.error("Error occurred during download:", error);
         }
     };
 
@@ -97,7 +99,7 @@ export default function DragAndDrop() {
                     <section className="dropZone">
                         <div {...getRootProps()}>
                             <input {...getInputProps()} />
-                            <p>Drag 'n' drop some files here, or click to select files</p>
+                            <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
                         </div>
                     </section>
                 )}
