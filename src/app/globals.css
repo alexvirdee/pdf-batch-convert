@@ -100,6 +100,13 @@ a {
   text-decoration: none;
 }
 
+.dropZone {
+  border-radius: 15px;
+  margin-top: 25px;
+  border: 2px dashed #fff;
+  padding: 2em;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
