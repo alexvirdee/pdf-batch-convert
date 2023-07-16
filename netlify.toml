@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "out"
+  publish = ".next"
 
 [build.environment]
   NEXT_PUBLIC_API_URL = "https://png-py-75bc1b4fd24d.herokuapp.com/"
