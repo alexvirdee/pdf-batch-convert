@@ -40,12 +40,12 @@ export default function DragAndDrop() {
             const apiUrl = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_API_URL : "http://127.0.0.1:5001";
 
             // Make a POST request to the API route
-            const response = await fetch(`${apiUrl}/convert`, {
+            const response = await axios.post(`${apiUrl}/convert`, {
                 method: "POST",
                 body: formData,
             });
 
-            if (!response.ok) {
+            if (!response) {
                 throw new Error("Conversion failed");
             }
 
