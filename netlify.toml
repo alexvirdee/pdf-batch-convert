@@ -1,3 +1,6 @@
 [build]
-command = "pip install -r requirements.txt && python app.py"
-publish = ".next"
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NEXT_PUBLIC_API_URL = "https://png-py-75bc1b4fd24d.herokuapp.com/"
