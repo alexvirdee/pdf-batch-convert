@@ -107,6 +107,14 @@ a {
   padding: 2em;
 }
 
+.btn {
+  margin-top: 12px;
+  padding: 8px;
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
